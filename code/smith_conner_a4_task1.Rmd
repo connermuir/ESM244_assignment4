@@ -1,0 +1,36 @@
+---
+title: "Assignment 4 -Task 1"
+author: "Conner Smith"
+date: "2/28/2022"
+output: 
+  html_document: 
+    theme: flatly
+    code_folding: hide
+---
+
+```{r setup, include=TRUE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(sf)
+library(raster)
+library(tmap)
+```
+
+## **Overview**
+
+This task draws on data from the Oil Spill Prevention and Response (OSPR) Incident Tracking database. The data are collected by OSPR Field Response Team members for Marine oil spills and by OSPR Inland Pollution Coordinators and Wardens for Inland incidents. An "incident", for purposes of this database, is "a discharge or threatened discharge of petroleum or other deleterious material into the waters of the state." This database is used to both inform the public of these incidents and assess the preparedness and responsiveness of agencies responsible for managing environmental damages including spills.
+
+## **Analysis**
+
+This section ...
+
+```{r}
+# Read in counties chapefile first 
+
+ca_counties_sf <- read_sf(here("data", "task1_data", "ca_counties", "CA_Counties_TIGER2016.shp"))
+```
+
+### **Data Citation**
