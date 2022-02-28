@@ -1,5 +1,5 @@
 ---
-title: "Assignment 4 -Task 1"
+title: "Oil Spill incidents in California Through 2008"
 author: "Conner Smith"
 date: "2/28/2022"
 output: 
@@ -15,7 +15,6 @@ library(tidyverse)
 library(here)
 library(janitor)
 library(sf)
-library(raster)
 library(tmap)
 ```
 
@@ -23,14 +22,96 @@ library(tmap)
 
 This task draws on data from the Oil Spill Prevention and Response (OSPR) Incident Tracking database. The data are collected by OSPR Field Response Team members for Marine oil spills and by OSPR Inland Pollution Coordinators and Wardens for Inland incidents. An "incident", for purposes of this database, is "a discharge or threatened discharge of petroleum or other deleterious material into the waters of the state." This database is used to both inform the public of these incidents and assess the preparedness and responsiveness of agencies responsible for managing environmental damages including spills.
 
-## **Analysis**
-
-This section ...
 
 ```{r}
-# Read in counties chapefile first 
+# Read in counties shapefile first 
 
-ca_counties_sf <- read_sf(here("data", "task1_data", "ca_counties", "CA_Counties_TIGER2016.shp"))
+ca_counties_sf <- read_sf(here("data", "task1_data", "ca_counties", "CA_Counties_TIGER2016.shp")) %>% 
+  clean_names() # to get names in lower snake case 
+
+# filtering for two variables of interest
+
+ca_sub_sf <- ca_counties_sf %>% 
+  select(county_name = name, land_area = aland) 
+
+# Now read in spill data
+
+oil_spills <- read_sf(here("data", "task1_data", "ds394.shp")) %>% 
+  clean_names() # to get names in lower snake case 
 ```
 
+## **Analysis**
+
+This analysis creates two different maps to view the spatial distribution and concentration of oil spills at the county level throughout California. The severity or magnitude of these spills in not tracked in the data set used for this assesment. 
+
+```{r}
+#Setting coordinate reference system 
+
+# ca_sub_sf %>% st_crs() # This is 4326 ID 
+
+# oil_spills %>%  st_crs() # This is 4296 ID 
+
+# Need to make oil spills same crs 
+
+spills_4326_sf <- st_transform(oil_spills, st_crs(ca_counties_sf))
+
+# spills_4326_sf %>% st_crs()
+
+# They seem to match now, silencing these so they don't show up in the knitted document.
+
+```
+
+### **Figure 1: Interactive Map of Oil Spills in California (through 2008)**
+```{r}
+# Exploratory quick plot to see how this looks together
+
+#ggplot() +
+  #geom_sf(data = ca_counties_sf) +
+  #geom_sf(data = spills_4326_sf, size = 1, color = "red")
+
+# Seems to look okay to me, lets tmap this 
+
+tmap_mode(mode = "view")
+
+tm_shape(ca_sub_sf) +
+  tm_borders() +
+  tm_fill("land_area", title = "Land Area (meters squared)", 
+          palette = "BuGn") +
+  tm_shape(spills_4326_sf) +
+  tm_dots(col = "cadetblue")
+
+# Need to double check units here 
+```
+#### **Figure 1:** *This interactive map shows the location of oil spills in California transposed over a county map of the state. This shows only the incidence of a spill, not the magnitude of each event.* 
+
+This interactive map shows that oil spills have been generally concentrated in Central California and Southern California population centers like the San Francisco Bay Area, Sacramento, Los Angeles, and San Diego. This could reflect spills from oil transport and processing facilities in these locations. 
+
+### **Figure 2: Density Map of Inland Oil Spills by California County (through 2008)**
+```{r}
+# Now create a fixed coropleth map counting inland incidents by county
+
+ca_count_sf <- ca_sub_sf %>% 
+  st_join(spills_4326_sf)
+
+# Generate counts from the combined data frame 
+spills_counts_sf <- ca_count_sf %>% 
+  group_by(county_name) %>%
+  filter(inlandmari == "Inland") %>% 
+  summarize(spill_count = sum(!is.na(dfgcontrol)))
+
+# Create the map
+
+ggplot(data = spills_counts_sf) +
+  geom_sf(aes(fill = spill_count), color = "white", size = 0.1) +
+  scale_fill_gradientn(colors = c("lightgray","purple","blue")) +
+  theme_minimal() +
+  labs(fill = "Number of Spills")
+```
+
+#### **Figure 2:** *This map shows the count of spills by county. The darkest color counties have the most recorded spills.*
+
+This spill map confirms what the interactive map in **Figure 1** shows where Los Angeles had the highest number of spills out of any county in California. The Bay Area region also shows a high density of recorded spills. This could be combined with other data sets to show the severity of spills at different locations. It is also worth noting that some marine spills, including the Santa Barbara oil spill of 1969, were particularly detrimental to the regional environment. 
+
 ### **Data Citation**
+
+*California Department of Fish and Game, Office of Spill Prevention and Response. 2009. Oil Spill Incident Tracking. https://map.dfg.ca.gov/metadata/ds0394.html*
