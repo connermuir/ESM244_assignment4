@@ -1,0 +1,115 @@
+---
+title: "Willamette Falls Fish Passage Analysis"
+author: "Conner Smith"
+date: "3/3/2022"
+output: 
+  html_document:
+   theme:
+     bg: "#002B36"
+     fg: "#EEE8D5"
+     primary: "#2AA198"
+   code_folding: hide
+
+---
+
+```{r setup, include=TRUE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(knitr)
+library(fable)
+library(tsibble)
+library(feasts)
+library(lubridate)
+library(thematic)
+
+# Using thematic to standardize theme here 
+
+thematic::thematic_rmd()
+thematic::thematic_on()
+
+```
+
+## **Overview**
+
+```{r}
+# Read in the main data set
+
+fish <- read_csv(here("data", "willamette_fish_passage.csv")) %>% 
+  clean_names()
+
+# Adding image
+include_graphics(here('chinook.jpg'))
+```
+
+This analysis looks at fish passage data at Willamette Falls collected by the University of Washington's Columbia Basin Research initiative. Data collection is ongoing and managed by a combination of federal, state, and tribal agencies. The tabs below include time series data, seasonal plots, and annual counts by species for fish ladder passage at Willamette Falls from 2001 to 2010.    
+
+
+**Data Citation**
+
+
+
+## **Analysis** {.tabset}
+
+....
+
+### **Original Time Series**
+
+... 
+
+```{r}
+# Convert this to a tsibble since the 'date' column is a character
+
+fish_ts <- fish %>% 
+  mutate(date = mdy(date)) %>% #Using 'lubridate::mdy' instead of 'tsibble::yearmonth'
+  as_tsibble(key = NULL, index = date) %>% 
+  select(coho, jack_coho, steelhead) %>% #Filter for these three species
+  replace_na(list(coho = 0, jack_coho = 0, steelhead = 0)) %>% 
+
+# want to make all fish appear in same column with 'pivot_longer'
+  
+  pivot_longer(cols = c(coho, jack_coho, steelhead),
+               names_to = 'fish_species',
+               values_to = 'passage_count') %>% #Get the names back to normal format
+  mutate(fish_species = case_when(fish_species == 'coho' ~ 'Coho',
+                   fish_species == 'jack_coho' ~ 'Jack Coho',
+                   fish_species == 'steelhead' ~ 'Steelhead'))
+
+```
+
+#### **Figure 1: Counts of Fish Passage for Coho, Jack Coho, and Steelhead (2001-2010)**
+```{r}
+# Calling the wrangled data frame into a static graph 
+
+ggplot(data = fish_ts, aes(x = date, y = passage_count)) + 
+  geom_line(aes(color = fish_species)) +
+  scale_color_manual("Fish Species", 
+                     values = c('aquamarine4', 'indianred3', 'goldenrod2')) +
+  labs(x = "Date", y = "Passage Counts")
+
+
+```
+
+##### **Figure 1:** *Fish passage counts for Coho, Jack Coho, and Steelhead at Willamette Falls from 2001 through 2010 are shown.*
+
+- Passage of Steelhead at Willamette Falls remains relatively consistent year to year with clear seasonal trends. 
+
+- Passage counts for Coho increase significantly after 2009 and are more than twice as high as Steelhead passage counts in 2010. 
+
+- Jack Coho showed the smallest number of passages. Jack Coho are smaller than Coho and may have more difficulty passing through the fish ladder compared to older, larger individuals. 
+
+### **Season Plots**
+
+....
+```{r}
+
+```
+
+### **Annual Count by Species**
+
+....
+```{r}
+
+```
