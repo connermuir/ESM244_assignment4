@@ -48,8 +48,23 @@ include_graphics(here('chinook.jpg'))
 
 [Source: Corvallis Advocate](https://www.corvallisadvocate.com/2020/army-corps-failed-to-protect-willamette-river-salmon-judge-rules/)
 
-This analysis looks at fish passage data at Willamette Falls collected by the University of Washington's Columbia Basin Research initiative. Data collection is ongoing and managed by a combination of federal, state, and tribal agencies. The tabs below include time series data, seasonal plots, and annual counts by species for fish ladder passage at Willamette Falls from 2001 to 2010.    
+This analysis looks at fish passage data at Willamette Falls collected by the University of Washington's Columbia Basin Research initiative. Data collection is ongoing and managed by a combination of federal, state, and tribal agencies. The tabs below include time series data, seasonal plots, and annual counts by species for fish ladder passage at Willamette Falls from 2001 to 2010. 
 
+The image below shows where the falls are located in the wider watershed.
+
+```{r, out.height="50%", out.width="50%"}
+include_graphics(here('watershed_map.png'))
+```
+
+[Source: Oregon Department of Fish and Wildlife](https://www.researchgate.net/publication/243963907_Pre-spawning_migration_of_adult_Pacific_lamprey_Entosphenus_tridentatus_in_the_Willamette_River_Oregon_USA)
+
+The following image provides a schematic of the function of the locks, fish ladder, and other infrastructure at the falls.
+
+```{r, out.height="50%", out.width="50%"}
+include_graphics(here('falls_locks.jpg'))
+```
+
+[Source: U.S. Army Corps of Engineers](https://www.nwp.usace.army.mil/willamette/locks/)
 
 **Data Citation**
 *University of Washington, Columbia Basin Research. 2010. DART Adult Passage Graphics & Text.* http://www.cbr.washington.edu/dart/query/adult_graph_text.
