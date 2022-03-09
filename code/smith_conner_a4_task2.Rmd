@@ -52,7 +52,7 @@ This analysis looks at fish passage data at Willamette Falls collected by the Un
 
 
 **Data Citation**
-*University of Washington, Columbia Basin Research. 2010. DART Adult Passage Graphics & Text. http://www.cbr.washington.edu/dart/query/adult_graph_text.*
+*University of Washington, Columbia Basin Research. 2010. DART Adult Passage Graphics & Text.* http://www.cbr.washington.edu/dart/query/adult_graph_text.
 
 
 ## **Analysis** {.tabset}
@@ -90,9 +90,9 @@ fish_ts <- fish %>%
 ggplot(data = fish_ts, aes(x = date, y = passage_count)) + 
   geom_line(aes(color = fish_species)) +
   scale_color_manual("Fish Species", 
-                     values = c('aquamarine4', 'indianred3', 'goldenrod2')) +
+                     values = c('slateblue', 'olivedrab2', 'aquamarine3')) +
   labs(x = "Date", y = "Passage Counts", 
-       caption = "Figure 1: Time series fish passage counts for Coho, Jack Coho, and Steelhead at Willamette Falls from 2001 through 2010.") +
+       caption = "Figure 1: Time series fish passage counts for Coho, Jack Coho and Steelhead at Willamette Falls (2001 - 2010)") +
    theme(plot.caption = element_text(hjust = 0, face = "bold.italic")) +
   theme(legend.position = "bottom")
 
@@ -136,7 +136,7 @@ steel_plot <- fish_ts %>%
   gg_season(y = passage_count) +
   scale_color_viridis_c() +
   labs(title = "Steelhead Passages", y = "Passage Counts",
-       caption = "Figure 2: These graphs show the seasonality of passages across the three species. The values in the legend refer to the 10-year range of data with '10' corresponding to 2010.") +
+       caption = "Figure 2: These graphs show the seasonality of passages across the three species.\nThe values in the legend refer to the 10-year range of data with '10' corresponding to 2010.") +
   theme(plot.caption = element_text(hjust = 0, face = "bold.italic")) +
   theme(legend.position = "bottom") +
   theme(axis.title.x = element_blank()) 
@@ -188,9 +188,9 @@ ggplot(data = fish_counts, aes(x = year, y = annual_count)) +
   geom_line(aes(x = year, y = annual_counts, color = fish_species)) +
   scale_x_continuous(breaks = pretty_breaks(n = 5)) +
   scale_color_manual("Fish Species",
-                     values = c('aquamarine4', 'indianred3', 'goldenrod2')) +
+                     values = c('slateblue', 'olivedrab2', 'aquamarine3')) +
   labs(x = "Date", y = "Passage Counts", 
-       caption = "Figure 2: Annual fish passage counts for Coho, Jack Coho, and Steelhead at Willamette Falls from 2001 through 2010.") +
+       caption = "Figure 3: Annual fish passage counts for Coho, Jack Coho, and Steelhead at Willamette Falls.") +
    theme(plot.caption = element_text(hjust = 0, face = "bold.italic")) +
   theme(legend.position = "bottom")
   
